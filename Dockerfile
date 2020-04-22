@@ -15,26 +15,16 @@ RUN chmod +x /usr/local/bin/kubectl
 
 # Install Helm
 ENV FILENAME helm-v${HELM_VERSION}-linux-amd64.tar.gz
-ENV HELM_URL https://storage.googleapis.com/kubernetes-helm/${FILENAME}
+ENV HELM_URL https://get.helm.sh/${FILENAME}
 
 RUN curl -o /tmp/$FILENAME ${HELM_URL} \
   && tar -zxvf /tmp/${FILENAME} -C /tmp \
   && mv /tmp/linux-amd64/helm /bin/helm \
   && rm -rf /tmp
 
-RUN set -x && \
-    apk add --update $RUNTIME_DEPS && \
-    apk add --virtual build_deps $BUILD_DEPS &&  \
-    cp /usr/bin/envsubst /usr/local/bin/envsubst && \
-    apk del build_deps
-
-# Install Helm plugins
-RUN helm init --client-only
 # Plugin is downloaded to /tmp, which must exist
 RUN mkdir /tmp
 RUN helm plugin install https://github.com/chartmuseum/helm-push.git
-
-RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 RUN cd /usr/local/bin && \
   curl -sL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-linux-amd64.tar.gz | tar -xz
