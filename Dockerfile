@@ -32,7 +32,7 @@ RUN set -x && \
 RUN helm init --client-only
 # Plugin is downloaded to /tmp, which must exist
 RUN mkdir /tmp
-helm plugin install https://github.com/chartmuseum/helm-push.git
+RUN helm plugin install https://github.com/chartmuseum/helm-push.git
 
 RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
